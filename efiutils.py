@@ -14,7 +14,7 @@ from idautils import *
 from idc import *
 import efiguids
 
-MAX_STACK_DEPTH = 1
+MAX_STACK_DEPTH = 3
 IMAGE_HANDLE_NAME       = 'gImageHandle'
 SYSTEM_TABLE_NAME       = 'gSystemTable'
 SYSTEM_TABLE_STRUCT     = 'EFI_SYSTEM_TABLE'
@@ -184,7 +184,7 @@ def update_struct_offsets(data_addr, struct_name):
     for xref in xrefs:
         # We're only interested in xrefs in code where the left operand is a register, and the right operand is the
         # memory address of our data structure.
-        if GetOpType(xref, 0) == o_reg and GetOpType(xref, 1) == o_mem and GetOperandValue(xref, 1) == struct_name:
+        if GetOpType(xref, 0) == o_reg and GetOpType(xref, 1) == o_mem and GetOperandValue(xref, 1) == data_addr:
             print "Processing xref from 0x%x: %s" % (xref, GetDisasm(xref))
             update_struct_offsets_for_xref(xref, struct_name)
         else:
@@ -302,6 +302,7 @@ def update_protocols():
 
 
 def update_protocol(guid_addr, protocol):
+    pass
     # # Find xrefs to this GUID
     # xrefs = list(DataRefsTo(guid_addr))
     # print "Found %d xrefs to GUID %s" % (len(xrefs), str(guid_at_addr(guid_addr)))
@@ -334,6 +335,10 @@ def reg_from_displ(displ):
     e.g. qword ptr [rbx+8] -> rbx
     """
     m = re.match(r'.*\[(.*)[\+\-]', displ)
+    if (m is None): 
+        # sometimes IDA gets angry and emits disassembly in the form `qword ptr ds:off_118[rax] 
+        # if we failed to find a proper match, attempt this form as well 
+        m = re.match(r'.*:off.*\[(.*)\]', displ)
     return m.group(1)
 
 
