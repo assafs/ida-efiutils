@@ -302,7 +302,6 @@ def update_protocols():
 
 
 def update_protocol(guid_addr, protocol):
-    pass
     # # Find xrefs to this GUID
     # xrefs = list(DataRefsTo(guid_addr))
     # print "Found %d xrefs to GUID %s" % (len(xrefs), str(guid_at_addr(guid_addr)))
@@ -316,9 +315,7 @@ def update_protocol(guid_addr, protocol):
     #         update_struct_offsets_for_xref(xref, struct_name)
     #     else:
     #         print "Too hard basket - xref from 0x%x: %s" % (xref, GetDisasm(xref))
-
-
-
+    pass
 
 def find_struct_refs():
     isStroff(GetFlags(here()), 0)
